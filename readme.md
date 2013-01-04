@@ -28,10 +28,16 @@ or...
 
     hubot vote 1
 
+### Show choices
+
+    hubot show choices
+
 ### Show votes
+
     hubot show votes
 
 ### End a vote
+
     hubot end vote
 
 ## License
