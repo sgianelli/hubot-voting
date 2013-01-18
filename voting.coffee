@@ -41,9 +41,11 @@ module.exports = (robot) ->
 
       results = tallyVotes()
 
-      msg.send "The results are..."
+      response = "The results are..."
       for choice, index in robot.voting.choices
-        msg.send "#{choice}: #{results[index]}"
+        response += "\n#{choice}: #{results[index]}"
+
+      msg.send response
 
       delete robot.voting.votes
       delete robot.voting.choices
