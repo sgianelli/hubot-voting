@@ -73,7 +73,7 @@ module.exports = (robot) ->
 
     console.log choice
 
-    sender = robot.usersForFuzzyName(msg.message.user['name'])[0].name
+    sender = robot.brain.usersForFuzzyName(msg.message.user['name'])[0].name
 
     if validChoice choice
       robot.voting.votes[sender] = choice
