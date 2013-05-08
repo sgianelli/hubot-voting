@@ -58,9 +58,7 @@ module.exports = (robot) ->
 
   robot.respond /show votes/i, (msg) ->
     results = tallyVotes()
-
-    for choice, index in robot.voting.choices
-      msg.send "#{choice}: #{results[index]}"
+    sendChoices(msg, results)
 
   robot.respond /vote (for )?(.+)$/i, (msg) ->
     choice = null
@@ -84,12 +82,14 @@ module.exports = (robot) ->
   createChoices = (rawChoices) ->
     robot.voting.choices = rawChoices.split(/, /)
 
-  sendChoices = (msg) ->
+  sendChoices = (msg, results = null) ->
 
     if robot.voting.choices?
       response = ""
       for choice, index in robot.voting.choices
         response += "#{index}: #{choice}"
+        if results?
+          response += " -- Total Votes: #{results[index]}"
         response += "\n" unless index == robot.voting.choices.length - 1
     else
       msg.send "There is not a vote going on right now"
