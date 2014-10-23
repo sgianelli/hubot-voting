@@ -4,7 +4,13 @@ Vote using [Hubot](http://github.com/github/hubot)
 
 ## Installation
 
-Move the script into hubot/src/scripts/
+Run the npm install command...
+
+    npm install hubot-voting
+
+Add the script to the `external-scripts.json` file
+
+    ["hubot-voting"]
 
 ## Usage
 
@@ -42,4 +48,4 @@ or...
 
 ## License
 
-MIT licensed. Copyight 2012 Joshua Antonishen.
+MIT licensed. Copyight 2014 Joshua Antonishen.
