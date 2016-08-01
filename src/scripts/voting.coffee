@@ -75,7 +75,7 @@ module.exports = (robot) ->
     sender = robot.brain.usersForFuzzyName(msg.message.user['name'])[0].name
 
     if validChoice msg, choice
-      robot.voting[msg.message.room].votes[sender] = choice
+      robot.voting[msg.message.room].votes[sender] = choice - 1
       msg.send "#{sender} voted for #{robot.voting[msg.message.room].choices[choice - 1]}"
     else
       msg.send "#{sender}: That is not a valid choice"
