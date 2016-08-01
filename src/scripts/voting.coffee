@@ -30,6 +30,7 @@ module.exports = (robot) ->
       sendChoices (msg)
     else
       robot.voting[msg.message.room] = {}
+      robot.voting[msg.message.room].owner = msg.user.name
       robot.voting[msg.message.room].votes = {}
       createChoices msg, msg.match[1]
 
@@ -37,7 +38,9 @@ module.exports = (robot) ->
       sendChoices(msg)
 
   robot.respond /end vote/i, (msg) ->
-    if robot.voting[msg.message.room].votes?
+    if robot.voting[msg.message.room].owner != msg.user.name
+      console.log "User cannot end vote"
+    else if robot.voting[msg.message.room].votes?
       console.log robot.voting[msg.message.room].votes
 
       results = tallyVotes(msg)
