@@ -31,7 +31,7 @@ module.exports = (robot) ->
     else
       robot.voting[msg.message.room] = {}
       robot.voting[msg.message.room].votes = {}
-      createChoices msg.match[1]
+      createChoices msg, msg.match[1]
 
       msg.send "Vote started"
       sendChoices(msg)
@@ -80,7 +80,7 @@ module.exports = (robot) ->
     else
       msg.send "#{sender}: That is not a valid choice"
 
-  createChoices = (rawChoices) ->
+  createChoices = (msg, rawChoices) ->
     robot.voting[msg.message.room].choices = rawChoices.split(/, /)
 
   sendChoices = (msg, results = null) ->
