@@ -87,7 +87,7 @@ module.exports = (robot) ->
     if robot.voting.choices?
       response = ""
       for choice, index in robot.voting.choices
-        response += "#{index}: #{choice}"
+        response += "#{index + 1}: #{choice}"
         if results?
           response += " -- Total Votes: #{results[index]}"
         response += "\n" unless index == robot.voting.choices.length - 1
@@ -97,8 +97,8 @@ module.exports = (robot) ->
     msg.send response
 
   validChoice = (choice) ->
-    numChoices = robot.voting.choices.length - 1
-    0 <= choice <= numChoices
+    numChoices = robot.voting.choices.length
+    0 < choice <= numChoices
 
   tallyVotes = () ->
     results = (0 for choice in robot.voting.choices)
