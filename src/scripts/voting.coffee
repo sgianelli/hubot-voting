@@ -25,24 +25,24 @@ module.exports = (robot) ->
 
   robot.respond /start vote (.+)$/i, (msg) ->
 
-    if robot.voting.votes?
+    if robot.voting[msg.message.room].votes?
       msg.send "A vote is already underway"
       sendChoices (msg)
     else
-      robot.voting.votes[msg.message.room] = {}
+      robot.voting[msg.message.room].votes = {}
       createChoices msg.match[1]
 
       msg.send "Vote started"
       sendChoices(msg)
 
   robot.respond /end vote/i, (msg) ->
-    if robot.voting.votes[msg.message.room]?
-      console.log robot.voting.votes[msg.message.room]
+    if robot.voting[msg.message.room].votes?
+      console.log robot.voting[msg.message.room].votes
 
       results = tallyVotes()
 
       response = "The results are..."
-      for choice, index in robot.voting.choices
+      for choice, index in robot.voting[msg.message.room].choices
         response += "\n#{choice}: #{results[index]}"
 
       msg.send response
@@ -67,45 +67,45 @@ module.exports = (robot) ->
     if re.test(msg.match[2])
       choice = parseInt msg.match[2], 10
     else
-      choice = robot.voting.choices.indexOf msg.match[2]
+      choice = robot.voting[msg.message.room].choices.indexOf msg.match[2]
 
     console.log choice
 
     sender = robot.brain.usersForFuzzyName(msg.message.user['name'])[0].name
 
     if validChoice choice
-      robot.voting.votes[msg.message.room][sender] = choice
-      msg.send "#{sender} voted for #{robot.voting.choices[choice - 1]}"
+      robot.voting[msg.message.room].votes[sender] = choice
+      msg.send "#{sender} voted for #{robot.voting[msg.message.room].choices[choice - 1]}"
     else
       msg.send "#{sender}: That is not a valid choice"
 
   createChoices = (rawChoices) ->
-    robot.voting.choices = rawChoices.split(/, /)
+    robot.voting[msg.message.room].choices = rawChoices.split(/, /)
 
   sendChoices = (msg, results = null) ->
 
-    if robot.voting.choices?
+    if robot.voting[msg.message.room].choices?
       response = ""
-      for choice, index in robot.voting.choices
+      for choice, index in robot.voting[msg.message.room].choices
         response += "#{index + 1}: #{choice}"
         if results?
           response += " -- Total Votes: #{results[index]}"
-        response += "\n" unless index == robot.voting.choices.length - 1
+        response += "\n" unless index == robot.voting[msg.message.room].choices.length - 1
     else
       msg.send "There is not a vote going on right now"
 
     msg.send response
 
   validChoice = (choice) ->
-    numChoices = robot.voting.choices.length
+    numChoices = robot.voting[msg.message.room].choices.length
     0 < choice <= numChoices
 
   tallyVotes = () ->
-    results = (0 for choice in robot.voting.choices)
+    results = (0 for choice in robot.voting[msg.message.room].choices)
 
     voters = Object.keys robot.voting[msg.message.room].votes
     for voter in voters
-      choice = robot.voting.votes[msg.message.room][voter]
+      choice = robot.voting[msg.message.room].votes[voter]
       results[choice] += 1
 
     results
