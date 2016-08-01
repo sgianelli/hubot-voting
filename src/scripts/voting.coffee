@@ -23,7 +23,7 @@
 module.exports = (robot) ->
   robot.voting = {}
 
-  robot.respond /start vote (t=\i+)? (.+)$/i, (msg) ->
+  robot.respond /start vote (t=\i+ )?(.+)$/i, (msg) ->
     console.log "MATCHES: #{msg.match[1]}"
     console.log "MATCHES: #{msg.match[2]}"
     if robot.voting[msg.message.room]? and robot.voting[msg.message.room].votes?
