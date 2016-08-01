@@ -40,7 +40,7 @@ module.exports = (robot) ->
     if robot.voting[msg.message.room].votes?
       console.log robot.voting[msg.message.room].votes
 
-      results = tallyVotes()
+      results = tallyVotes(msg)
 
       response = "The results are..."
       for choice, index in robot.voting[msg.message.room].choices
@@ -58,7 +58,7 @@ module.exports = (robot) ->
     sendChoices(msg)
 
   robot.respond /show votes/i, (msg) ->
-    results = tallyVotes()
+    results = tallyVotes(msg)
     sendChoices(msg, results)
 
   robot.respond /vote (for )?(.+)$/i, (msg) ->
@@ -101,7 +101,7 @@ module.exports = (robot) ->
     numChoices = robot.voting[msg.message.room].choices.length
     0 < choice <= numChoices
 
-  tallyVotes = () ->
+  tallyVotes = (msg) ->
     results = (0 for choice in robot.voting[msg.message.room].choices)
 
     voters = Object.keys robot.voting[msg.message.room].votes
