@@ -24,14 +24,12 @@ module.exports = (robot) ->
   robot.voting = {}
 
   robot.respond /start vote (\d+m )?(.+)$/i, (msg) ->
-    console.log "MATCHES: #{msg.match[1]}"
-    console.log "MATCHES: #{msg.match[2]}"
     if robot.voting[msg.message.room]? and robot.voting[msg.message.room].votes?
       msg.send "A vote is already underway"
       sendChoices (msg)
     else
       robot.voting[msg.message.room] = {}
-      robot.voting[msg.message.room].timeout = msg.match[1]
+      robot.voting[msg.message.room].timeout = msg.match[1].substring(0, msg.match[1].length - 2)
       robot.voting[msg.message.room].owner = msg.envelope.user.name
       robot.voting[msg.message.room].votes = {}
       createChoices msg, msg.match[2]
