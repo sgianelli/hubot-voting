@@ -29,7 +29,7 @@ module.exports = (robot) ->
       sendChoices (msg)
     else
       robot.voting[msg.message.room] = {}
-      robot.voting[msg.message.room].start = (new Date()).getTime
+      robot.voting[msg.message.room].start = (new Date()).getTime()
       robot.voting[msg.message.room].timeout = 60 * msg.match[1].substring(0, msg.match[1].length - 2)
       robot.voting[msg.message.room].owner = msg.envelope.user.name
       robot.voting[msg.message.room].votes = {}
