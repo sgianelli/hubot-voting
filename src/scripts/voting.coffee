@@ -29,15 +29,15 @@ module.exports = (robot) ->
       msg.send "A vote is already underway"
       sendChoices (msg)
     else
-      robot.voting.votes = {}
+      robot.voting.votes[msg.message.room] = {}
       createChoices msg.match[1]
 
       msg.send "Vote started"
       sendChoices(msg)
 
   robot.respond /end vote/i, (msg) ->
-    if robot.voting.votes?
-      console.log robot.voting.votes
+    if robot.voting.votes[msg.message.room]?
+      console.log robot.voting.votes[msg.message.room]
 
       results = tallyVotes()
 
@@ -47,8 +47,8 @@ module.exports = (robot) ->
 
       msg.send response
 
-      delete robot.voting.votes
-      delete robot.voting.choices
+      delete robot.voting[msg.message.room].votes
+      delete robot.voting[msg.message.room].choices
     else
       msg.send "There is not a vote to end"
 
@@ -74,8 +74,8 @@ module.exports = (robot) ->
     sender = robot.brain.usersForFuzzyName(msg.message.user['name'])[0].name
 
     if validChoice choice
-      robot.voting.votes[sender] = choice
-      msg.send "#{sender} voted for #{robot.voting.choices[choice]}"
+      robot.voting.votes[msg.message.room][sender] = choice
+      msg.send "#{sender} voted for #{robot.voting.choices[choice - 1]}"
     else
       msg.send "#{sender}: That is not a valid choice"
 
@@ -103,9 +103,9 @@ module.exports = (robot) ->
   tallyVotes = () ->
     results = (0 for choice in robot.voting.choices)
 
-    voters = Object.keys robot.voting.votes
+    voters = Object.keys robot.voting[msg.message.room].votes
     for voter in voters
-      choice = robot.voting.votes[voter]
+      choice = robot.voting.votes[msg.message.room][voter]
       results[choice] += 1
 
     results
