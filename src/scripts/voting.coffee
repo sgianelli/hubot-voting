@@ -24,7 +24,7 @@ module.exports = (robot) ->
   robot.voting = {}
 
   robot.respond /start vote (.+)$/i, (msg) ->
-
+    console.log "MSG: #{msg}"
     if robot.voting[msg.message.room]? and robot.voting[msg.message.room].votes?
       msg.send "A vote is already underway"
       sendChoices (msg)
