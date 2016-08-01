@@ -24,14 +24,13 @@ module.exports = (robot) ->
   robot.voting = {}
 
   robot.respond /start vote (.+)$/i, (msg) ->
-    for k, v of msg.envelope
-        console.log "MSG: #{k} -> #{v}"
+    console.log "User: #{msg.envelope.user.name}"
     if robot.voting[msg.message.room]? and robot.voting[msg.message.room].votes?
       msg.send "A vote is already underway"
       sendChoices (msg)
     else
       robot.voting[msg.message.room] = {}
-      robot.voting[msg.message.room].owner = msg.user.name
+      robot.voting[msg.message.room].owner = msg.envelope.user.name
       robot.voting[msg.message.room].votes = {}
       createChoices msg, msg.match[1]
 
@@ -39,7 +38,7 @@ module.exports = (robot) ->
       sendChoices(msg)
 
   robot.respond /end vote/i, (msg) ->
-    if robot.voting[msg.message.room].owner != msg.user.name
+    if robot.voting[msg.message.room].owner != msg.envelope.user.name
       console.log "User cannot end vote"
     else if robot.voting[msg.message.room].votes?
       console.log robot.voting[msg.message.room].votes
