@@ -74,7 +74,7 @@ module.exports = (robot) ->
 
     sender = robot.brain.usersForFuzzyName(msg.message.user['name'])[0].name
 
-    if validChoice choice
+    if validChoice msg, choice
       robot.voting[msg.message.room].votes[sender] = choice
       msg.send "#{sender} voted for #{robot.voting[msg.message.room].choices[choice - 1]}"
     else
@@ -97,7 +97,7 @@ module.exports = (robot) ->
 
     msg.send response
 
-  validChoice = (choice) ->
+  validChoice = (msg, choice) ->
     numChoices = robot.voting[msg.message.room].choices.length
     0 < choice <= numChoices
 
