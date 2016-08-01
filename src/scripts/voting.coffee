@@ -30,7 +30,7 @@ module.exports = (robot) ->
     else
       robot.voting[msg.message.room] = {}
       robot.voting[msg.message.room].start = (new Date()).getTime()
-      robot.voting[msg.message.room].timeout = 60 * msg.match[1].substring(0, msg.match[1].length - 2)
+      robot.voting[msg.message.room].timeout = 1000 * 60 * msg.match[1].substring(0, msg.match[1].length - 2)
       robot.voting[msg.message.room].owner = msg.envelope.user.name
       robot.voting[msg.message.room].votes = {}
       createChoices msg, msg.match[2]
@@ -39,8 +39,14 @@ module.exports = (robot) ->
       sendChoices(msg)
 
   robot.respond /end vote/i, (msg) ->
-    if robot.voting[msg.message.room].owner != msg.envelope.user.name
-      console.log "User cannot end vote"
+    vote = robot.voting[msg.message.room]
+    currentTime = (new Date()).getTime()
+    endTime = vote.timeout + vote.start
+    delta = endTime - currentTime
+    expired = delta >= 0
+
+    if !expired
+      msg.send "User cannot end vote, #{delta / 60000} minutes remaining"
     else if robot.voting[msg.message.room].votes?
       console.log robot.voting[msg.message.room].votes
 
