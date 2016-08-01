@@ -45,6 +45,8 @@ module.exports = (robot) ->
     delta = endTime - currentTime
     expired = delta >= 0
 
+    console.log("Current: #{currentTime} end time: #{endTime} delta: #{delta}")
+
     if !expired
       msg.send "User cannot end vote, #{delta / 60000} minutes remaining"
     else if robot.voting[msg.message.room].votes?
