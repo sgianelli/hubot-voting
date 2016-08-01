@@ -29,7 +29,8 @@ module.exports = (robot) ->
       sendChoices (msg)
     else
       robot.voting[msg.message.room] = {}
-      robot.voting[msg.message.room].timeout = msg.match[1].substring(0, msg.match[1].length - 2)
+      robot.voting[msg.message.room].start = Date().getTime
+      robot.voting[msg.message.room].timeout = 60 * msg.match[1].substring(0, msg.match[1].length - 2)
       robot.voting[msg.message.room].owner = msg.envelope.user.name
       robot.voting[msg.message.room].votes = {}
       createChoices msg, msg.match[2]
@@ -61,6 +62,7 @@ module.exports = (robot) ->
     sendChoices(msg)
 
   robot.respond /show votes/i, (msg) ->
+    console.log "#{robot.voting[msg.message.room].start} -- #{robot.voting[msg.message.room].timeout}"
     results = tallyVotes(msg)
     sendChoices(msg, results)
 
