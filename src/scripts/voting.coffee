@@ -29,6 +29,7 @@ module.exports = (robot) ->
       msg.send "A vote is already underway"
       sendChoices (msg)
     else
+      robot.voting[msg.message.room] = {}
       robot.voting[msg.message.room].votes = {}
       createChoices msg.match[1]
 
