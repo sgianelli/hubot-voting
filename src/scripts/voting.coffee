@@ -85,6 +85,13 @@ module.exports = (robot) ->
     else
       msg.send "There is not a vote to end"
 
+  robot.respond /add option (.+)/i, (msg) ->
+    vote = robot.voting[msg.message.room]
+
+    if vote.owner != msg.envelope.user.name
+      msg.send "I can't let you do that"
+    else
+      vote.choices.push msg.match[1]
 
   robot.respond /show choices/i, (msg) ->
     sendChoices(msg)
