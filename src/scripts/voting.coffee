@@ -23,22 +23,30 @@
 module.exports = (robot) ->
   robot.voting = {}
 
+  Default = {
+    Duration: 3 * 60 * 60 * 1000,
+    Locked: false
+  }
+
   robot.respond /start vote (\d+m )?(.+)$/i, (msg) ->
-    time = 3 * 60 * 60 * 1000
+    time = Default.Duration
     options = msg.match[2]
 
     if msg.match[1] != undefined
-        time = 1000 * 60 * msg.match[1].substring(0, msg.match[1].length - 2)
+      time = 60 * 1000 * msg.match[1].substring(0, msg.match[1].length - 2)
 
     if robot.voting[msg.message.room]? and robot.voting[msg.message.room].votes?
       msg.send "A vote is already underway"
-      sendChoices (msg)
+      sendChoices(msg)
     else
-      robot.voting[msg.message.room] = {}
-      robot.voting[msg.message.room].start = (new Date()).getTime()
-      robot.voting[msg.message.room].timeout = time
-      robot.voting[msg.message.room].owner = msg.envelope.user.name
-      robot.voting[msg.message.room].votes = {}
+      vote = {}
+      vote.start = (new Date()).getTime()
+      vote.timeout = time
+      vote.owner = msg.envelope.user.name
+      vote.votes = {}
+
+      robot.voting[msg.message.room] = vote
+
       createChoices msg, options
 
       msg.send "Vote started -- #{Math.ceil(robot.voting[msg.message.room].timeout / 60000)} minutes remaining"
@@ -62,7 +70,7 @@ module.exports = (robot) ->
 
       response = "The results are..."
       for choice, index in robot.voting[msg.message.room].choices
-        response += "\n#{choice}: #{results[index]}"
+        response += "\n#{choice}: #{results[index].total}"
 
       msg.send response
 
@@ -109,7 +117,7 @@ module.exports = (robot) ->
       for choice, index in robot.voting[msg.message.room].choices
         response += "#{index + 1}: #{choice}"
         if results?
-          response += " -- Total Votes: #{results[index]}"
+          response += " -- Total Votes: #{results[index].total (results[index].names.join(', '))}"
         response += "\n" unless index == robot.voting[msg.message.room].choices.length - 1
     else
       msg.send "There is not a vote going on right now"
@@ -121,11 +129,13 @@ module.exports = (robot) ->
     0 < choice <= numChoices
 
   tallyVotes = (msg) ->
-    results = (0 for choice in robot.voting[msg.message.room].choices)
+    results = ({ total: 0, names: [] } for choice in robot.voting[msg.message.room].choices)
+    vote = robot.voting[msg.message.room]
+    voters = Object.keys vote.votes
 
-    voters = Object.keys robot.voting[msg.message.room].votes
     for voter in voters
-      choice = robot.voting[msg.message.room].votes[voter]
-      results[choice] += 1
+      choice = vote.votes[voter]
+      results[choice].total += 1
+      results[choice].names.push voter
 
     results
