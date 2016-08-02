@@ -24,16 +24,25 @@ module.exports = (robot) ->
   robot.voting = {}
 
   robot.respond /start vote (\d+m )?(.+)$/i, (msg) ->
+    time = 3 * 60 * 60 * 1000
+    options = ""
+
+    if msg.match.length == 3
+        time = msg.match[1]
+        options = 1000 * 60 * msg.match[1].substring(0, msg.match[1].length - 2)
+    else
+        options = msg.match[1]
+
     if robot.voting[msg.message.room]? and robot.voting[msg.message.room].votes?
       msg.send "A vote is already underway"
       sendChoices (msg)
     else
       robot.voting[msg.message.room] = {}
       robot.voting[msg.message.room].start = (new Date()).getTime()
-      robot.voting[msg.message.room].timeout = 1000 * 60 * msg.match[1].substring(0, msg.match[1].length - 2)
+      robot.voting[msg.message.room].timeout = time
       robot.voting[msg.message.room].owner = msg.envelope.user.name
       robot.voting[msg.message.room].votes = {}
-      createChoices msg, msg.match[2]
+      createChoices msg, options
 
       msg.send "Vote started -- #{Math.ceil(robot.voting[msg.message.room].timeout / 60000)} minutes remaining"
       sendChoices(msg)
