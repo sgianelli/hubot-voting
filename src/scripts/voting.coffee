@@ -117,7 +117,7 @@ module.exports = (robot) ->
       for choice, index in robot.voting[msg.message.room].choices
         response += "#{index + 1}: #{choice}"
         if results?
-          response += " -- Total Votes: #{results[index].total} (#{results[index].names.join(', ')})"
+          response += " -- Total Votes: #{results[index].total}"
         response += "\n" unless index == robot.voting[msg.message.room].choices.length - 1
     else
       msg.send "There is not a vote going on right now"
