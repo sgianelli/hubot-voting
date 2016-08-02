@@ -71,7 +71,12 @@ module.exports = (robot) ->
       response = "The results are..."
       for choice, index in robot.voting[msg.message.room].choices
         participants = results[index].names.join(', ')
-        response += "\n#{choice}: #{results[index].total}" + (participants.length > 0 ? " " + participants : "")
+        tail = ""
+
+        if participants.length > 0
+            tail = participants
+
+        response += "\n#{choice}: #{results[index].total}" + tail
 
       msg.send response
 
