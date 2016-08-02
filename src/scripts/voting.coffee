@@ -28,8 +28,8 @@ module.exports = (robot) ->
     options = ""
 
     if msg.match.length == 3
-        time = msg.match[1]
-        options = 1000 * 60 * msg.match[1].substring(0, msg.match[1].length - 2)
+        time = 1000 * 60 * msg.match[1].substring(0, msg.match[1].length - 2)
+        options = msg.match[2]
     else
         options = msg.match[1]
 
