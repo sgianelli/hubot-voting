@@ -35,7 +35,7 @@ module.exports = (robot) ->
       robot.voting[msg.message.room].votes = {}
       createChoices msg, msg.match[2]
 
-      msg.send "Vote started"
+      msg.send "Vote started -- #{robot.voting[msg.message.room].timeout} minutes remaining"
       sendChoices(msg)
 
   robot.respond /end vote/i, (msg) ->
