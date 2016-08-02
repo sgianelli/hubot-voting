@@ -74,7 +74,7 @@ module.exports = (robot) ->
         tail = ""
 
         if participants.length > 0
-            tail = participants
+            tail = " (#{participants})"
 
         response += "\n#{choice}: #{results[index].total}" + tail
 
