@@ -25,13 +25,10 @@ module.exports = (robot) ->
 
   robot.respond /start vote (\d+m )?(.+)$/i, (msg) ->
     time = 3 * 60 * 60 * 1000
-    options = ""
+    options = msg.match[2]
 
-    if msg.match.length == 3
+    if msg.match[1] != undefined
         time = 1000 * 60 * msg.match[1].substring(0, msg.match[1].length - 2)
-        options = msg.match[2]
-    else
-        options = msg.match[1]
 
     if robot.voting[msg.message.room]? and robot.voting[msg.message.room].votes?
       msg.send "A vote is already underway"
